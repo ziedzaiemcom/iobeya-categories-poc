@@ -1,6 +1,7 @@
+let ws_protocol = (window.location.protocol == "https:") ? "wss" : "ws";
+  
 const client = new StompJs.Client({
-  let protocol = (window.location.protocol == "https:") ? "wss" : "ws";
-  brokerURL: `${protocol}://${window.location.host}/ws`,
+  brokerURL: `${ws_protocol}://${window.location.host}/ws`,
   debug: function (str) {
     	//console.log(str);
   },
