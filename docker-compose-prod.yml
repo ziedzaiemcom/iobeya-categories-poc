@@ -32,6 +32,8 @@ services:
       - PMA_HOST=iobeya-categories-poc-db
     expose:
         - 80
+    networks:
+        - traefik_frontend
 
   iobeya-categories-poc-adminer:
     image: adminer:4.8.1
@@ -51,6 +53,8 @@ services:
     restart: always
     expose:
         - 8080
+    networks:
+        - traefik_frontend
 
 
   iobeya-categories-poc-zookeeper:
@@ -91,6 +95,8 @@ services:
       - iobeya-categories-poc-kafka
     expose:
       - 8080
+    networks:
+        - traefik_frontend
     environment:
       KAFKA_BROKERS: iobeya-categories-poc-kafka:9092
 
@@ -121,6 +127,14 @@ services:
         - spring.jpa.properties.hibernate.format_sql=false
     expose:
         - 8080
+    networks:
+        - traefik_frontend
+
 
 volumes:
   iobeya-categories-poc-db-data:
+
+
+networks:
+    traefik_frontend:
+        external: true

@@ -6,6 +6,7 @@ Proof of Concept iObeya Categories
 
 - Internet connection (to get docker images + maven deps + JS deps)
 - docker & docker compose (tested on linux)
+- OpenJDK 11 (to compile locally)
 
 ## How to run
 
