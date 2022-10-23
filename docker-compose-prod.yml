@@ -4,7 +4,7 @@ services:
   iobeya-categories-poc-db:
     image: mariadb:10.9.3
     container_name: iobeya-categories-poc-db
-    restart: always
+    restart: unless-stopped
     volumes:
         - iobeya-categories-poc-db-data:/var/lib/mysql
         - ./iobeya-categories-init.sql:/docker-entrypoint-initdb.d/iobeya-categories-init.sql
@@ -13,6 +13,8 @@ services:
         - MARIADB_PASSWORD=iobeya
         - MARIADB_DATABASE=iobeya
         - MARIADB_USER=iobeya
+    networks:
+        - traefik_frontend
 
   iobeya-categories-poc-phpmyadmin:
     image: phpmyadmin:5.2.0
@@ -25,7 +27,7 @@ services:
         - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.tls.certresolver=letsencyptresolver"
         - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.tls.options=default"
         - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.middlewares=secured" 
-    restart: always
+    restart: unless-stopped
     depends_on:
         - iobeya-categories-poc-db
     environment:
@@ -50,7 +52,7 @@ services:
         - iobeya-categories-poc-db
     links:
         - iobeya-categories-poc-db:db
-    restart: always
+    restart: unless-stopped
     expose:
         - 8080
     networks:
@@ -60,7 +62,7 @@ services:
   iobeya-categories-poc-zookeeper:
     image: confluentinc/cp-zookeeper:5.4.10
     container_name: iobeya-categories-poc-zookeeper
-    restart: always
+    restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -68,7 +70,7 @@ services:
   iobeya-categories-poc-kafka:
     image: confluentinc/cp-kafka:5.4.10
     container_name: iobeya-categories-poc-kafka
-    restart: always
+    restart: unless-stopped
     depends_on:
       - iobeya-categories-poc-zookeeper
     environment:
@@ -78,6 +80,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+        - traefik_frontend
   
   iobeya-categories-poc-kowl:
     image: quay.io/cloudhut/kowl:master
@@ -90,7 +94,7 @@ services:
         - "traefik.http.routers.iobeya-categories-poc-kowl.tls.certresolver=letsencyptresolver"
         - "traefik.http.routers.iobeya-categories-poc-kowl.tls.options=default"
         - "traefik.http.routers.iobeya-categories-poc-kowl.middlewares=secured"  
-    restart: always
+    restart: unless-stopped
     depends_on:
       - iobeya-categories-poc-kafka
     expose:
@@ -110,9 +114,8 @@ services:
         - "traefik.http.routers.iobeya-categories-poc-app.tls.certresolver=letsencyptresolver"
         - "traefik.http.routers.iobeya-categories-poc-app.tls.options=default"
         - "traefik.http.routers.iobeya-categories-poc-app.middlewares=secured"  
-
     container_name: iobeya-categories-poc-app
-    restart: always
+    restart: unless-stopped
     links:
         - iobeya-categories-poc-db:db
     depends_on:
