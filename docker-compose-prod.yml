@@ -1,0 +1,126 @@
+version: '3'
+
+services:
+  iobeya-categories-poc-db:
+    image: mariadb:10.9.3
+    container_name: iobeya-categories-poc-db
+    restart: always
+    volumes:
+        - iobeya-categories-poc-db-data:/var/lib/mysql
+        - ./iobeya-categories-init.sql:/docker-entrypoint-initdb.d/iobeya-categories-init.sql
+    environment:
+        - MARIADB_ROOT_PASSWORD=iobeya
+        - MARIADB_PASSWORD=iobeya
+        - MARIADB_DATABASE=iobeya
+        - MARIADB_USER=iobeya
+
+  iobeya-categories-poc-phpmyadmin:
+    image: phpmyadmin:5.2.0
+    container_name: iobeya-categories-poc-phpmyadmin
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.rule=Host(`iobeya-categories-poc-phpmyadmin.ziedzaiem.com`)"
+        - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.entrypoints=https"
+        - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.tls=true"
+        - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.tls.certresolver=letsencyptresolver"
+        - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.tls.options=default"
+        - "traefik.http.routers.iobeya-categories-poc-phpmyadmin.middlewares=secured" 
+    restart: always
+    depends_on:
+        - iobeya-categories-poc-db
+    environment:
+      - PMA_HOST=iobeya-categories-poc-db
+    expose:
+        - 80
+
+  iobeya-categories-poc-adminer:
+    image: adminer:4.8.1
+    container_name: iobeya-categories-poc-adminer
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.iobeya-categories-poc-adminer.rule=Host(`iobeya-categories-poc-adminer.ziedzaiem.com`)"
+        - "traefik.http.routers.iobeya-categories-poc-adminer.entrypoints=https"
+        - "traefik.http.routers.iobeya-categories-poc-adminer.tls=true"
+        - "traefik.http.routers.iobeya-categories-poc-adminer.tls.certresolver=letsencyptresolver"
+        - "traefik.http.routers.iobeya-categories-poc-adminer.tls.options=default"
+        - "traefik.http.routers.iobeya-categories-poc-adminer.middlewares=secured" 
+    depends_on:
+        - iobeya-categories-poc-db
+    links:
+        - iobeya-categories-poc-db:db
+    restart: always
+    expose:
+        - 8080
+
+
+  iobeya-categories-poc-zookeeper:
+    image: confluentinc/cp-zookeeper:5.4.10
+    container_name: iobeya-categories-poc-zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  
+  iobeya-categories-poc-kafka:
+    image: confluentinc/cp-kafka:5.4.10
+    container_name: iobeya-categories-poc-kafka
+    restart: always
+    depends_on:
+      - iobeya-categories-poc-zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: iobeya-categories-poc-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://iobeya-categories-poc-kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  
+  iobeya-categories-poc-kowl:
+    image: quay.io/cloudhut/kowl:master
+    container_name: iobeya-categories-poc-kowl
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.iobeya-categories-poc-kowl.rule=Host(`iobeya-categories-poc-kowl.ziedzaiem.com`)"
+        - "traefik.http.routers.iobeya-categories-poc-kowl.entrypoints=https"
+        - "traefik.http.routers.iobeya-categories-poc-kowl.tls=true"
+        - "traefik.http.routers.iobeya-categories-poc-kowl.tls.certresolver=letsencyptresolver"
+        - "traefik.http.routers.iobeya-categories-poc-kowl.tls.options=default"
+        - "traefik.http.routers.iobeya-categories-poc-kowl.middlewares=secured"  
+    restart: always
+    depends_on:
+      - iobeya-categories-poc-kafka
+    expose:
+      - 8080
+    environment:
+      KAFKA_BROKERS: iobeya-categories-poc-kafka:9092
+
+  iobeya-categories-poc-app:
+    build : .
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.iobeya-categories-poc-app.rule=Host(`iobeya-categories-poc-app.ziedzaiem.com`)"
+        - "traefik.http.routers.iobeya-categories-poc-app.entrypoints=https"
+        - "traefik.http.routers.iobeya-categories-poc-app.tls=true"
+        - "traefik.http.routers.iobeya-categories-poc-app.tls.certresolver=letsencyptresolver"
+        - "traefik.http.routers.iobeya-categories-poc-app.tls.options=default"
+        - "traefik.http.routers.iobeya-categories-poc-app.middlewares=secured"  
+
+    container_name: iobeya-categories-poc-app
+    restart: always
+    links:
+        - iobeya-categories-poc-db:db
+    depends_on:
+        - iobeya-categories-poc-db
+        - iobeya-categories-poc-kafka
+    environment:
+        - kafka.bootstrapAddress=iobeya-categories-poc-kafka:9092
+        - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/iobeya
+        - spring.jpa.show-sql=false
+        - spring.jpa.properties.hibernate.show_sql=false
+        - spring.jpa.properties.hibernate.use_sql_comments=false
+        - spring.jpa.properties.hibernate.format_sql=false
+    expose:
+        - 8080
+
+volumes:
+  iobeya-categories-poc-db-data:
