@@ -39,3 +39,14 @@ CALL generateChildCategories();
 ```
 
 This script will randomly generate data.
+
+## 🪦 A moment of silence for our fallen soldier...
+
+```
+$ uptime
+ 20:43:06 up 602 days,  8:34,  2 users,  load average: 116.43, 177.95, 126.05
+$ uptime -s
+2021-02-28 12:08:29
+```
+
+You REALLY need a strong machine to run this poc.

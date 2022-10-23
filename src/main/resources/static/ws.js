@@ -1,5 +1,5 @@
 const client = new StompJs.Client({
-  brokerURL: 'ws://localhost:8080/ws',
+  brokerURL: `ws://${window.location.host}/ws`,
   debug: function (str) {
     	//console.log(str);
   },

@@ -29,13 +29,19 @@
 	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 	        <li class="nav-item">
-	          <a class="nav-link" href="/api/v1/docs.html">OpenAPI Spec</a>
+	          <a class="nav-link" href="/api/v1/docs.html" target="_blank" rel="noopener noreferrer">OpenAPI Spec</a>
 	        </li>
 	        <li class="nav-item">
-	          <a class="nav-link" th:href="${@environment.getProperty('kowl.url')}">Kowl</a>
+	          <a class="nav-link" th:href="${@environment.getProperty('git.url')}" target="_blank" rel="noopener noreferrer"><i class="bi bi-github"></i> Github <i class="bi bi-box-arrow-up-right"></i></a>
 	        </li>
 	        <li class="nav-item">
-	          <a class="nav-link" th:href="${@environment.getProperty('git.url')}">Git</a>
+	          <a class="nav-link" th:href="${@environment.getProperty('kowl.url')}" target="_blank" rel="noopener noreferrer">Kowl <i class="bi bi-box-arrow-up-right"></i></a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" th:href="${@environment.getProperty('pma.url')}" target="_blank" rel="noopener noreferrer">PhpMyAdmin <i class="bi bi-box-arrow-up-right"></i></a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" th:href="${@environment.getProperty('adminer.url')}" target="_blank" rel="noopener noreferrer">Adminer <i class="bi bi-box-arrow-up-right"></i></a>
 	        </li>
 	      </ul>
 	      <form class="d-flex" th:action="@{/logout}" method="post">

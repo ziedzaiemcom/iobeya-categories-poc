@@ -130,6 +130,9 @@ services:
         - spring.jpa.properties.hibernate.show_sql=false
         - spring.jpa.properties.hibernate.use_sql_comments=false
         - spring.jpa.properties.hibernate.format_sql=false
+        - kowl.url=https://iobeya-categories-poc-kowl.ziedzaiem.com/
+        - pma.url=https://iobeya-categories-poc-phpmyadmin.ziedzaiem.com/
+        - adminer.url=https://iobeya-categories-poc-adminer.ziedzaiem.com/
     expose:
         - 8080
     networks:
