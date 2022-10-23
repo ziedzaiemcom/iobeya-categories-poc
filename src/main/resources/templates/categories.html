@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>iObeya Categories</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/style.css">
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- WebScockets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>        
+	<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@6.1.2/bundles/stomp.umd.min.js" integrity="sha256-058gIKngimQZLHRaE5Yks4nPej2mijokAMpY1kyYvcE=" crossorigin="anonymous"></script>
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	  <div class="container-fluid">
+	    <a class="navbar-brand" href="/"><i class="bi bi-list-nested"></i> iObeya Categories</a>
+	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	        <li class="nav-item">
+	          <a class="nav-link" href="/api/v1/docs.html">OpenAPI Spec</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" th:href="${@environment.getProperty('kowl.url')}">Kowl</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" th:href="${@environment.getProperty('git.url')}">Git</a>
+	        </li>
+	      </ul>
+	      <form class="d-flex" th:action="@{/logout}" method="post">
+            <button class="btn btn-dark me-3" disabled><i class="bi bi-person-circle"></i> [[${#httpServletRequest.remoteUser}]]</button>
+            <button type="submit" class="btn btn-secondary">Sign out <i class="bi bi-box-arrow-right"></i></button>
+	      </form>
+	    </div>
+	  </div>
+	</nav>
+
+	<br/>
+
+    <div id="app">
+    	<div class="container-fluid">
+		  <div class="row">
+		    <div class="col-6">
+				<h2>Root Categories <span class="badge bg-secondary" v-if="categories.data.length > 0">&lbrace;{categories.data.length}}</span>
+				<br/>
+				<button class="btn btn-dark" v-if="categories.data.length < 1001" title="Add Root Category" @click="addRootCategory()"><i class="bi bi-plus-circle-fill"></i></button>
+				
+				</h2>
+				
+				<ul>
+					<div v-if="!categories.loaded" class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div>
+			    	<category-li v-for="cat in categories.data"
+			    		:id="cat.id"
+			    		:parent="cat.parent"
+			    		:depth="cat.depth"
+			    		:child_count="cat.child_count"
+			    		:name="cat.name"
+			    		:search="false"
+			    		:events="events"></category-li>
+				</ul>
+		    </div>
+		    <div class="col-3">
+		        <div class="container-fluid">
+					<div class="input-group">
+					      <span class="input-group-text" id="search-input"><i class="bi bi-search"></i></span>
+					      <input type="text" class="form-control" placeholder="Search" v-model.lazy="search.term" v-on:change="searchFor(search.term)" aria-label="Search" aria-describedby="search-input">
+					    </div>
+					    <div>
+					 </div>
+					 <ul>							
+						<div v-if="!search.loaded" class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div>
+
+				    	<category-li v-for="cat in search.data"
+				    		:id="cat.id"
+				    		:parent="cat.parent"
+				    		:depth="cat.depth"
+				    		:child_count="cat.child_count"
+				    		:name="cat.name"
+			    			:search="true"
+				    		:events="events"></category-li>
+					  </ul>
+				    </div>
+				 </for>
+		    </div>
+		    
+		    <div class="col-3">
+		    	<div class="row">
+				    <h3><i class="bi bi-exclamation-diamond"></i> Events <span v-if="ws_state" title="Connection UP"><i class="text-muted bi bi-hand-thumbs-up-fill"></i></span><span v-if="!ws_state"  title="Connection DOWN"><i class="text-muted bi bi-hand-thumbs-down-fill"></i></span></h3>
+				    <ul class="list-group">
+					  <li class="list-group-item" style="padding: 3px;" v-for="event in events.slice().reverse()" 
+					  	:class="{ 'list-group-item-success' : event.type == 'C', 'list-group-item-danger' : event.type == 'D', 'list-group-item-info' : event.type == 'M' }">
+					  	<span v-html="getEventIcon(event)"></span> &lbrace;{event.data.name}} <i style="float: right;">&lbrace;{getEventAgo(event)}}</i></li>
+					</ul>
+		    	</div>
+		    	<br/>
+		    	<div class="row">
+				    <h3><i class="bi bi-bar-chart-line-fill"></i> Stats</h3>
+				    <h4 v-if="stats.total.length > 0">Total : &lbrace;{stats.total[0].total}}</h4>
+				    <h5 v-if="stats.byDepth.length > 0">Details By Depth:</h5>
+				    <ul v-if="stats.byDepth.length > 0">
+				    	<li class="list-group-item" v-for="stat in stats.byDepth">
+				    	<b>Level &lbrace;{stat.depth}} :</b> &lbrace;{stat.total}}</li>
+				    </ul>
+		    	</div>
+		    </div>
+		    
+		  </div>
+		</div>
+		
+		<div class="modal" tabindex="-1" id="errorModal">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">&lbrace;{errorModal.title}}</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <p>&lbrace;{errorModal.msg}}</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+    </div>
+    <script src="/CategoryComponent.js"></script>
+    <script src="/app.js"></script>
+    <script src="/ws.js"></script>
+  </body>
+</html>
