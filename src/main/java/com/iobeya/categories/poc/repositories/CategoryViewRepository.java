@@ -12,7 +12,6 @@ import com.iobeya.categories.poc.entities.CategoryView;
 
 @Repository
 public interface CategoryViewRepository extends CrudRepository<CategoryView, Long> {
-    List<CategoryView> findAll();
 
     List<CategoryView> findByName(String name);
 
@@ -21,9 +20,8 @@ public interface CategoryViewRepository extends CrudRepository<CategoryView, Lon
     List<CategoryView> findByDepthLessThanEqual(int depth);
 
     List<CategoryView> findByParent(long parent);    
-        
-    @Query("FROM CategoryView C WHERE C.name LIKE %:name%")
-    List<CategoryView> searchByName(@Param("name") String name);    
+    
+    List<CategoryView> findTop1000ByNameContainingIgnoreCase(@Param("name") String name);    
 
     @Procedure("getCategoryParents")
     List<CategoryView> findParentsById(long id);    

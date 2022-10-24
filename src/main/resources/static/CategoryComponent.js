@@ -85,7 +85,7 @@ const CategoryLi = {
 		async loadParents(){
 		    		    
 		    try{
-				const response = await fetch(`/api/v1/views/${this.id}/parents`);
+				const response = await fetch(`/api/v1/categories/${this.id}/parents`);
 			    const json = await response.json();
 				this.parents = json;
 			} catch(error){
@@ -121,7 +121,7 @@ const CategoryLi = {
 		    this.loaded=false;
 		    
 		    try{
-				const response = await fetch(`/api/v1/views/${this.id}/children`);
+				const response = await fetch(`/api/v1/categories/${this.id}/children`);
 			    const json = await response.json();
 	
 			    this.children=json;

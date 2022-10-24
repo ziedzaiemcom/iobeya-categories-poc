@@ -22,17 +22,7 @@ public class CategoryViewRest {
     private CategoryViewRepository categoryViewRepository;
 
     
-	@RequestMapping(value="/api/v1/views/", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<CategoryView> getAllViews() {
-		
-		List<CategoryView> list = categoryViewRepository.findAll();
-		
-		return list;
-	}
-
-    
-	@RequestMapping(value="/api/v1/views/{depth}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/api/v1/categories/depth/{depth}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<CategoryView> getCategoriesViewsByDepth(@PathVariable int depth) {
 		
@@ -41,7 +31,7 @@ public class CategoryViewRest {
 		return list;
 	}
     
-	@RequestMapping(value="/api/v1/views/{parent}/children", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/api/v1/categories/{parent}/children", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<CategoryView> getViewChildren(@PathVariable Long parent) {
 		
@@ -50,16 +40,19 @@ public class CategoryViewRest {
 		return list;
 	}
 	
-	@RequestMapping(value = "/api/v1/search/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/api/v1/categories/search/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<CategoryView> getViewChildren(@PathVariable String name) {
 
-		List<CategoryView> list = categoryViewRepository.searchByName(name);
+		//List<CategoryView> list = categoryViewRepository.searchByName(name);
+		List<CategoryView> list = categoryViewRepository.findTop1000ByNameContainingIgnoreCase(name);
+		
+		
 
 		return list;
 	}
 	
-	@RequestMapping(value = "/api/v1/views/{id}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/api/v1/categories/{id}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	@Transactional
 	public List<CategoryView> findParentsById(@PathVariable long id) {

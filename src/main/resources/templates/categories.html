@@ -81,10 +81,11 @@
 					<div class="input-group">
 					      <span class="input-group-text" id="search-input"><i class="bi bi-search"></i></span>
 					      <input type="text" class="form-control" placeholder="Search" v-model.lazy="search.term" v-on:change="searchFor(search.term)" aria-label="Search" aria-describedby="search-input">
-					    </div>
-					    <div>
 					 </div>
-					 <ul>							
+					 
+					 <br/>
+					 <h5 v-if="search.data.length > 0">Found &lbrace;{search.data.length}} results for &lbrace;{search.term}} :</h5>
+					 <ul style="padding: 0;">							
 						<div v-if="!search.loaded" class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div>
 
 				    	<category-li v-for="cat in search.data"

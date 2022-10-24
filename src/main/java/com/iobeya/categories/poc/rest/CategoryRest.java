@@ -40,33 +40,6 @@ public class CategoryRest {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	@RequestMapping(value = "/api/v1/categories/{depth}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<Category> getCategoriesByDepth(@PathVariable int depth) {
-
-		List<Category> list = categoryRepository.findByDepthLessThanEqual(depth);
-
-		return list;
-	}
-
-	@RequestMapping(value = "/api/v1/categories/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<Category> getAll() {
-
-		List<Category> list = categoryRepository.findAll();
-
-		return list;
-	}
-
-	@RequestMapping(value = "/api/v1/categories/{parent}/children", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<Category> getChildren(@PathVariable long parent) {
-
-		List<Category> list = categoryRepository.findByParent(parent);
-
-		return list;
-	}
-
 	@PostMapping("/api/v1/categories")
 	public ResponseEntity<Object> save(@RequestBody Category category) {
 		try {

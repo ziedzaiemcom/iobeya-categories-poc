@@ -72,7 +72,7 @@ const vueApp = createApp({
 			this.categories.loaded = false;
 			
 			try{
-				const response = await fetch(`/api/v1/views/0`);
+				const response = await fetch(`/api/v1/categories/depth/0`);
 			    const json = await response.json();
 			    
 				this.categories.data = json;
@@ -187,7 +187,7 @@ const vueApp = createApp({
 			this.search.loaded = false;
 			
 			try{
-				const response = await fetch(`/api/v1/search/${term}`);
+				const response = await fetch(`/api/v1/categories/search/${term}`);
 			    const json = await response.json();
 			    
 				this.search.data = json;
