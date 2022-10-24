@@ -32,6 +32,10 @@ client.onConnect = function (frame) {
   });
 
 };
+client.onDisconnect = function (frame){
+  vueApp.ws_state = false;
+  console.error("stomp disconnected:" + frame);
+};
 
 client.onStompError = function (frame) {
   vueApp.ws_state = false;
@@ -39,8 +43,8 @@ client.onStompError = function (frame) {
   // Bad login/passcode typically will cause an error
   // Complaint brokers will set `message` header with a brief message. Body may contain details.
   // Compliant brokers will terminate the connection after any error
-  console.log('Broker reported error: ' + frame.headers['message']);
-  console.log('Additional details: ' + frame.body);
+  console.error('Broker reported error: ' + frame.headers['message']);
+  console.error('Additional details: ' + frame.body);
 };
 
 client.activate();
