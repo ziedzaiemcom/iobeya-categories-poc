@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,17 @@ import com.iobeya.categories.poc.repositories.CategoryRepository;
 @RestController
 public class CategoryRest {
 
+	@Value(value = "${light.mode}")
+	private boolean light_mode;
+	
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
 	@Autowired
 	private KafkaTemplate<String, CategoryOperation> kafkaTemplate;
+	
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@RequestMapping(value = "/api/v1/categories/{depth}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -65,7 +72,10 @@ public class CategoryRest {
 		try {
 			categoryRepository.save(category);
 		    
-		    kafkaTemplate.send("events", new CategoryOperation('C', category, new Date()));
+			if(light_mode)
+			    simpMessagingTemplate.convertAndSend("/topic/broadcast", new CategoryOperation('C', category, new Date()));
+			else
+				kafkaTemplate.send("events", new CategoryOperation('C', category, new Date()));
 		    		    
 			return new ResponseEntity<>(category, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -85,8 +95,11 @@ public class CategoryRest {
 			Category existing_category = categoryRepository.findById(id);
 			existing_category.setName(category.getName());
 			categoryRepository.save(existing_category);
-		    
-		    kafkaTemplate.send("events", new CategoryOperation('M', existing_category, new Date()));
+		    		    
+			if(light_mode)
+			    simpMessagingTemplate.convertAndSend("/topic/broadcast", new CategoryOperation('M', existing_category, new Date()));
+			else
+				kafkaTemplate.send("events", new CategoryOperation('M', existing_category, new Date()));
 		    
 			return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
 		} catch (Exception e) {
@@ -103,8 +116,11 @@ public class CategoryRest {
 		try {
 			Category category = categoryRepository.findById(id);
 			categoryRepository.delete(category);
-					    
-		    kafkaTemplate.send("events", new CategoryOperation('D', category, new Date()));
+					    		    
+			if(light_mode)
+			    simpMessagingTemplate.convertAndSend("/topic/broadcast", new CategoryOperation('D', category, new Date()));
+			else
+				kafkaTemplate.send("events", new CategoryOperation('D', category, new Date()));
 		    
 			return new ResponseEntity<>(category, HttpStatus.ACCEPTED);
 		} catch (Exception e) {

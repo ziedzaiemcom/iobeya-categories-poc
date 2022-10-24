@@ -20,7 +20,7 @@ DELIMITER $$
 --
 CREATE DEFINER=`iobeya`@`%` PROCEDURE `generate1000categories` ()   BEGIN
 DECLARE i INT DEFAULT 1; 
-WHILE (i <= 10) DO
+WHILE (i <= 1000) DO
     INSERT INTO categories (name) VALUES (concat("category." , i , "."));
     SET i = i+1;
 END WHILE;
@@ -38,7 +38,7 @@ WHILE (idepth < 10) DO
         INSERT INTO categories (name, parent)
             SELECT (concat(name,irand,".")), id
             FROM categories
-            WHERE depth = idepth AND rand() < 0.5
+            WHERE depth = idepth AND rand() < 0.2
             ORDER BY RAND();
         SET irand = irand+1;
     END WHILE;
@@ -123,7 +123,7 @@ CREATE TRIGGER `CHECK_ALPHANUM_NAME` BEFORE INSERT ON `categories` FOR EACH ROW 
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `CHECK_MAX_1000_ROOT_CATEGORIES` BEFORE INSERT ON `categories` FOR EACH ROW IF (SELECT count(id) FROM categories WHERE parent = NULL) > 1000 THEN
+CREATE TRIGGER `CHECK_MAX_1000_ROOT_CATEGORIES` BEFORE INSERT ON `categories` FOR EACH ROW IF (SELECT count(id) FROM categories WHERE parent IS NULL) > 1000 THEN
 SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'ALREADY HAVE 1000 ROOT CATEGORIES';
 END IF
 $$
