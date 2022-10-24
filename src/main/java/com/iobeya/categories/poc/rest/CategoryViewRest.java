@@ -45,7 +45,7 @@ public class CategoryViewRest {
 	public List<CategoryView> getViewChildren(@PathVariable String name) {
 
 		//List<CategoryView> list = categoryViewRepository.searchByName(name);
-		List<CategoryView> list = categoryViewRepository.findTop1000ByNameContainingIgnoreCase(name);
+		List<CategoryView> list = categoryViewRepository.findTop100ByNameContainingIgnoreCase(name);
 		
 		
 

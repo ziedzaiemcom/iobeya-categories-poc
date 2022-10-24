@@ -21,7 +21,7 @@ public interface CategoryViewRepository extends CrudRepository<CategoryView, Lon
 
     List<CategoryView> findByParent(long parent);    
     
-    List<CategoryView> findTop1000ByNameContainingIgnoreCase(@Param("name") String name);    
+    List<CategoryView> findTop100ByNameContainingIgnoreCase(@Param("name") String name);    
 
     @Procedure("getCategoryParents")
     List<CategoryView> findParentsById(long id);    
