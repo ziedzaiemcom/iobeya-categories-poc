@@ -73,6 +73,12 @@ const vueApp = createApp({
 			
 			try{
 				const response = await fetch(`/api/v1/categories/depth/0`);
+			    
+    			if(!response.ok) {
+					const error = await response.text();
+					throw error;
+				}
+				
 			    const json = await response.json();
 			    
 				this.categories.data = json;
@@ -183,11 +189,20 @@ const vueApp = createApp({
 			if(!term || term.length == 0)
 				return;
 				
+			//Escape Term
+			let escapedterm = term.replace(/[^0-9a-zA-Z\.]/gi, '')
+				
 			// Show loaded
 			this.search.loaded = false;
 			
 			try{
-				const response = await fetch(`/api/v1/categories/search/${term}`);
+				const response = await fetch(`/api/v1/categories/search/${escapedterm}`);
+			    
+    			if(!response.ok) {
+					const error = await response.text();
+					throw error;
+				}
+				
 			    const json = await response.json();
 			    
 				this.search.data = json;
@@ -205,6 +220,12 @@ const vueApp = createApp({
 			
 			try{
 				const response = await fetch(`/api/v1/stats`);
+    			
+    			if(!response.ok) {
+					const error = await response.text();
+					throw error;
+				}
+				
 			    const json = await response.json();
 			    
 			    this.stats.total = json;
@@ -220,8 +241,14 @@ const vueApp = createApp({
 			
 			try{
 				const response = await fetch(`/api/v1/stats/depth`);
-			    const json = await response.json();
 			    
+    			if(!response.ok) {
+					const error = await response.text();
+					throw error;
+				}
+				
+			    const json = await response.json();
+				
 			    this.stats.byDepth = json;
 				
 			} catch(error){

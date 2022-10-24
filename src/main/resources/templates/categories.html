@@ -102,7 +102,7 @@
 		    </div>
 		    
 		    <div class="col-3">
-		    	<div class="row border-bottom">
+		    	<div class="row">
 				    <h3><i class="bi bi-exclamation-diamond"></i> Events <span v-if="ws_state" title="Connection UP"><i class="text-muted bi bi-hand-thumbs-up-fill"></i></span><span v-if="!ws_state"  title="Connection DOWN"><i class="text-muted bi bi-hand-thumbs-down-fill"></i></span></h3>
 				    <ul class="list-group">
 					  <li class="list-group-item" style="padding: 3px;" v-for="event in events.slice().reverse()" 
@@ -110,7 +110,7 @@
 					  	<span v-html="getEventIcon(event)"></span> &lbrace;{event.data.name}} <i style="float: right;">&lbrace;{getEventAgo(event)}}</i></li>
 					</ul>
 		    	</div>
-		    	<br/>
+		    	<hr/>
 		    	<div class="row">
 				    <h3><i class="bi bi-bar-chart-line-fill"></i> Stats</h3>
 				    <h4 v-if="stats.total.length > 0">Total : &lbrace;{stats.total[0].total}}</h4>

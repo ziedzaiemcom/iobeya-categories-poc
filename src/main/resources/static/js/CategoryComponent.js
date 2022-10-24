@@ -86,6 +86,12 @@ const CategoryLi = {
 		    		    
 		    try{
 				const response = await fetch(`/api/v1/categories/${this.id}/parents`);
+			    
+    			if(!response.ok) {
+					const error = await response.text();
+					throw error;
+				}
+				
 			    const json = await response.json();
 				this.parents = json;
 			} catch(error){
@@ -122,6 +128,12 @@ const CategoryLi = {
 		    
 		    try{
 				const response = await fetch(`/api/v1/categories/${this.id}/children`);
+			    
+    			if(!response.ok) {
+					const error = await response.text();
+					throw error;
+				}
+				
 			    const json = await response.json();
 	
 			    this.children=json;

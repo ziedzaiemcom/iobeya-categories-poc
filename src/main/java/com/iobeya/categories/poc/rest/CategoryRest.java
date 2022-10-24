@@ -35,7 +35,7 @@ public class CategoryRest {
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
-	@Autowired
+	@Autowired	
 	private KafkaTemplate<String, CategoryOperation> kafkaTemplate;
 	
 	@Autowired
@@ -46,7 +46,7 @@ public class CategoryRest {
 	@ResponseBody
 	public List<Category> getViewChildren(@PathVariable String name) {
 
-		List<Category> list = categoryRepository.searchTop1000ByName("*" + name + "*");
+		List<Category> list = categoryRepository.searchTop1000ByName(name + "*");
 
 		return list;
 	}
