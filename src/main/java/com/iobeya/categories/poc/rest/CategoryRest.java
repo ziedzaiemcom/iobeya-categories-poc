@@ -46,7 +46,7 @@ public class CategoryRest {
 	@ResponseBody
 	public List<Category> getViewChildren(@PathVariable String name) {
 
-		List<Category> list = categoryRepository.searchTop100ByName("*" + name + "*");
+		List<Category> list = categoryRepository.searchTop1000ByName("*" + name + "*");
 
 		return list;
 	}

@@ -57,7 +57,7 @@
     <div id="app">
     	<div class="container-fluid">
 		  <div class="row">
-		    <div class="col-6">
+		    <div class="col-5">
 				<h2>Root Categories <span class="badge bg-secondary" v-if="categories.data.length > 0">&lbrace;{categories.data.length}}</span>
 				<br/>
 				<button class="btn btn-dark" v-if="categories.data.length < 1000" title="Add Root Category" @click="addRootCategory()"><i class="bi bi-plus-circle-fill"></i></button>
@@ -76,7 +76,7 @@
 			    		:events="events"></category-li>
 				</ul>
 		    </div>
-		    <div class="col-3">
+		    <div class="col-4">
 		        <div class="container-fluid">
 					<div class="input-group">
 					      <span class="input-group-text" id="search-input"><i class="bi bi-search"></i></span>
@@ -84,7 +84,7 @@
 					 </div>
 					 
 					 <br/>
-					 <h5 v-if="search.data.length > 0">Found &lbrace;{search.data.length}} results for &lbrace;{search.term}} :</h5>
+					 <h5 v-if="search.data.length > 0">Found <span v-if="search.data.length > 999">first</span> &lbrace;{search.data.length}} results for &lbrace;{search.term}} :</h5>
 					 <ul style="padding: 0;">							
 						<div v-if="!search.loaded" class="spinner-border text-secondary" role="status"><span class="visually-hidden">Loading...</span></div>
 

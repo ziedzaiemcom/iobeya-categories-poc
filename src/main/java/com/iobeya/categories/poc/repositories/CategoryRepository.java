@@ -13,8 +13,8 @@ public interface CategoryRepository extends CrudRepository<Category, Long> {
     
     Category findById(long id);
 
-    @Query(value = "SELECT * FROM categories WHERE MATCH (name) AGAINST (?1 IN BOOLEAN MODE) LIMIT 100", nativeQuery = true)
-    public List<Category> searchTop100ByName(String name);
+    @Query(value = "SELECT * FROM categories WHERE MATCH (name) AGAINST (?1 IN BOOLEAN MODE) LIMIT 1000", nativeQuery = true)
+    public List<Category> searchTop1000ByName(String name);
     
 
 }
