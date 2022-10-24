@@ -44,7 +44,6 @@ public class KafkaConsumerConfig {
 
 	@Bean
 	public ConcurrentKafkaListenerContainerFactory<String, CategoryOperation> kafkaListenerContainerFactory() {
-
 		ConcurrentKafkaListenerContainerFactory<String, CategoryOperation> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(consumerFactory());
 		return factory;
@@ -52,7 +51,6 @@ public class KafkaConsumerConfig {
 	
 	@KafkaListener(topics = "events")
 	public void listenToEvenets(CategoryOperation operation) {
- 		
 	    simpMessagingTemplate.convertAndSend("/topic/broadcast", operation);
 	}
 }

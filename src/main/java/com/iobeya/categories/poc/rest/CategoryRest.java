@@ -52,8 +52,7 @@ public class CategoryRest {
 		    		    
 			return new ResponseEntity<>(category, HttpStatus.CREATED);
 		} catch (Exception e) {
-			e.printStackTrace();
-			
+		
 			Throwable th = Utils.findCauseUsingPlainJava(e);
 			String error = e.getMessage() + " : " + th.getMessage();
 
