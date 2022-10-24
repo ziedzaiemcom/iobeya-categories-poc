@@ -46,7 +46,8 @@ public class CategoryRest {
 	@ResponseBody
 	public List<Category> getViewChildren(@PathVariable String name) {
 
-		List<Category> list = categoryRepository.searchTop1000ByName(name + "*");
+		//List<Category> list = categoryRepository.searchTop1000ByName(name + "*");
+		List<Category> list = categoryRepository.findTop1000ByNameContainingIgnoreCase(name);
 
 		return list;
 	}
