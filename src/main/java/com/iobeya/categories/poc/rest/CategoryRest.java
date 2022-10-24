@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iobeya.categories.poc.Utils;
 import com.iobeya.categories.poc.entities.Category;
 import com.iobeya.categories.poc.entities.CategoryOperation;
+import com.iobeya.categories.poc.entities.CategoryView;
 import com.iobeya.categories.poc.repositories.CategoryRepository;
 
 @RestController
@@ -39,6 +40,16 @@ public class CategoryRest {
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
+	
+
+	@RequestMapping(value = "/api/v1/categories/search/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<Category> getViewChildren(@PathVariable String name) {
+
+		List<Category> list = categoryRepository.searchTop100ByName("*" + name + "*");
+
+		return list;
+	}
 
 	@PostMapping("/api/v1/categories")
 	public ResponseEntity<Object> save(@RequestBody Category category) {

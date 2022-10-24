@@ -40,17 +40,18 @@ public class CategoryViewRest {
 		return list;
 	}
 	
-	@RequestMapping(value = "/api/v1/categories/search/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public List<CategoryView> getViewChildren(@PathVariable String name) {
-
-		//List<CategoryView> list = categoryViewRepository.searchByName(name);
-		List<CategoryView> list = categoryViewRepository.findTop100ByNameContainingIgnoreCase(name);
-		
-		
-
-		return list;
-	}
+//	@RequestMapping(value = "/api/v1/categories/search/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//	@ResponseBody
+//	public List<CategoryView> getViewChildren(@PathVariable String name) {
+//
+//		//List<CategoryView> list = categoryViewRepository.searchByName(name);
+//		//List<CategoryView> list = categoryViewRepository.findTop100ByNameContainingIgnoreCase(name);
+//		List<CategoryView> list = categoryViewRepository.searchTop100ByName("*" + name + "*");
+//		
+//		
+//
+//		return list;
+//	}
 	
 	@RequestMapping(value = "/api/v1/categories/{id}/parents", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody

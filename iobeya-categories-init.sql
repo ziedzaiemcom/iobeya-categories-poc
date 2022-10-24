@@ -74,6 +74,13 @@ CREATE DEFINER=`iobeya`@`%` PROCEDURE `getStatsByDepth` ()   BEGIN
     GROUP BY depth;
 END$$
 
+CREATE DEFINER=`iobeya`@`%` PROCEDURE `getStatsByChildCount` ()   BEGIN
+  SELECT child_count, count(child_count) AS total
+      FROM categories_view
+      GROUP BY child_count;
+END$$
+
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -100,8 +107,8 @@ CREATE TABLE `categories` (
 --
 ALTER TABLE `categories`
   ADD UNIQUE KEY `name` (`name`),
+  ADD FULLTEXT INDEX `full_text_index` (`name`) VISIBLE,
   ADD KEY `parent_fk` (`parent`);
-
 
 --
 -- Contraintes pour la table `categories`
