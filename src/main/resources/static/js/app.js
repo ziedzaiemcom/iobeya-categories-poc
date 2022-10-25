@@ -227,8 +227,9 @@ const vueApp = createApp({
 				}
 				
 			    const json = await response.json();
-			    
-			    this.stats.total = json;
+
+			    if(json[0] != null)
+				    this.stats.total = json;
 				
 			} catch(error){
 				this.showErrorModal(error);

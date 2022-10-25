@@ -1,5 +1,6 @@
 package com.iobeya.categories.poc.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,7 +21,8 @@ public class CategoryView {
     private Long id;
 
     private String name;
-    
+
+    @Column(nullable = true)
     private Long parent;
     
     private int depth;

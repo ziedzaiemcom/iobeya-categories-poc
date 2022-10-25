@@ -14,6 +14,14 @@ Links :
 - OpenJDK >= 11 (to compile locally)
 - IDE with [Lombok](https://projectlombok.org/) configured  (to compile locally)
 
+## DataBase Schema
+
+![Tables](tables.png)
+
+![Procedures](Procedures.png)
+
+![Triggers](Triggers.png)
+
 ## How to run
 
 ### fast

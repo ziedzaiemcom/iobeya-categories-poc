@@ -16,7 +16,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>        
 	<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@6.1.2/bundles/stomp.umd.min.js" integrity="sha256-058gIKngimQZLHRaE5Yks4nPej2mijokAMpY1kyYvcE=" crossorigin="anonymous"></script>
     
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   </head>
   <body>
   
@@ -30,18 +31,6 @@
 	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 	        <li class="nav-item">
 	          <a class="nav-link" href="/api/v1/docs.html" target="_blank" rel="noopener noreferrer">OpenAPI Spec</a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" th:href="${@environment.getProperty('git.url')}" target="_blank" rel="noopener noreferrer"><i class="bi bi-github"></i> Github <i class="bi bi-box-arrow-up-right"></i></a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" th:href="${@environment.getProperty('kowl.url')}" target="_blank" rel="noopener noreferrer">Kowl <i class="bi bi-box-arrow-up-right"></i></a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" th:href="${@environment.getProperty('pma.url')}" target="_blank" rel="noopener noreferrer">PhpMyAdmin <i class="bi bi-box-arrow-up-right"></i></a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" th:href="${@environment.getProperty('adminer.url')}" target="_blank" rel="noopener noreferrer">Adminer <i class="bi bi-box-arrow-up-right"></i></a>
 	        </li>
 	      </ul>
 	      <form class="d-flex" th:action="@{/logout}" method="post">
@@ -119,6 +108,17 @@
 				    	<li class="list-group-item" v-for="stat in stats.byDepth">
 				    	<b>Level &lbrace;{stat.depth}} :</b> &lbrace;{stat.total}}</li>
 				    </ul>
+		    	</div>
+		    	<hr/>
+		    	<div class="row">
+		    	
+		    		<ul>
+				        <li class="nav-item mb-2"><a th:href="${@environment.getProperty('git.url')}" target="_blank" rel="noopener noreferrer" class="nav-link p-0 text-muted"><i class="bi bi-github"></i> Github <i class="bi bi-box-arrow-up-right"></i></a></li>
+				        <li class="nav-item mb-2"><a th:href="${@environment.getProperty('kowl.url')}" target="_blank" rel="noopener noreferrer" class="nav-link p-0 text-muted">Kowl <i class="bi bi-box-arrow-up-right"></i></a></li>
+				        <li class="nav-item mb-2"><a th:href="${@environment.getProperty('pma.url')}" target="_blank" rel="noopener noreferrer" class="nav-link p-0 text-muted">PhpMyAdmin <i class="bi bi-box-arrow-up-right"></i></a></li>
+				        <li class="nav-item mb-2"><a th:href="${@environment.getProperty('adminer.url')}" target="_blank" rel="noopener noreferrer" class="nav-link p-0 text-muted">Adminer <i class="bi bi-box-arrow-up-right"></i></a></li>
+      
+		    		</ul>
 		    	</div>
 		    </div>
 		    
